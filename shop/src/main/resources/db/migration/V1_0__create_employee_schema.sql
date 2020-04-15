@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS `employee` (
     `email` varchar(50),
     `date_of_birth` timestamp
  
-)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+)
