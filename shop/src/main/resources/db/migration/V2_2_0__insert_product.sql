@@ -1,0 +1,3 @@
+insert into product(name, description, price, weight, category_id, supplier_id, image_url) values ('prod1', 'prod1', 10, 10, 1, 1, 'prod1');
+insert into product(name, description, price, weight, category_id, supplier_id, image_url) values ('prod2', 'prod2', 20, 20, 2, 2, 'prod2');
+insert into product(name, description, price, weight, category_id, supplier_id, image_url) values ('prod3', 'prod3', 30, 30, 3, 3, 'prod3');

@@ -1,18 +1,20 @@
 package ro.msg.learning.shop.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
 @Entity
+@Table(name = "order", schema = "shop_schema")
 public class Order implements IPrimaryKey{
 
     @Id
@@ -26,6 +28,7 @@ public class Order implements IPrimaryKey{
 
     private Date createdAt;
 
+    @OneToOne
     private Address address;
 
     @OneToMany(mappedBy = "order")

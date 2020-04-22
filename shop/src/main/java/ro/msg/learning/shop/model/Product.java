@@ -1,14 +1,19 @@
 package ro.msg.learning.shop.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
 @Entity
+@Table(name = "product", schema = "shop_schema")
 public class Product implements IPrimaryKey{
 
     @Id
@@ -28,7 +33,7 @@ public class Product implements IPrimaryKey{
     @ManyToOne
     private Supplier supplier;
 
-    private String imageURL;
+    private String image_url;
 
     @OneToMany(mappedBy = "product")
     private List<Stock> stock;

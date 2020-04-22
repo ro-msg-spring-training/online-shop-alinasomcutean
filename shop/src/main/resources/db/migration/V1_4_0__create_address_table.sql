@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Address (
+CREATE TABLE IF NOT EXISTS address (
     `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `country` VARCHAR(30),
     `city` VARCHAR(30),

@@ -1,16 +1,16 @@
 package ro.msg.learning.shop.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
 @Entity
+@Table(name = "category", schema = "shop_schema")
 public class Category implements IPrimaryKey{
 
     @Id
@@ -20,6 +20,6 @@ public class Category implements IPrimaryKey{
 
     private String description;
 
-    @OneToMany
+    @OneToMany(mappedBy = "category")
     private List<Product> products;
 }
