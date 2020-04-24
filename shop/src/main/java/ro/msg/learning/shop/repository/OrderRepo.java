@@ -6,4 +6,6 @@ import ro.msg.learning.shop.model.Order;
 
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Integer> {
+
+    void deleteById(Integer id);
 }

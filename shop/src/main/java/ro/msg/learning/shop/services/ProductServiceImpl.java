@@ -1,127 +1,115 @@
 package ro.msg.learning.shop.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dto.ProductCategoryDTO;
-import ro.msg.learning.shop.model.*;
+import ro.msg.learning.shop.model.Category;
+import ro.msg.learning.shop.model.Product;
+import ro.msg.learning.shop.model.Supplier;
 import ro.msg.learning.shop.repository.CategoryRepo;
 import ro.msg.learning.shop.repository.OrderDetailRepo;
 import ro.msg.learning.shop.repository.ProductRepo;
 import ro.msg.learning.shop.repository.StockRepo;
 
-import java.util.ArrayList;
+import javax.transaction.Transactional;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    ProductRepo productRepo;
-
-    @Autowired
-    CategoryRepo categoryRepo;
-
-    @Autowired
-    StockRepo stockRepo;
-
-    @Autowired
-    OrderDetailRepo orderDetailRepo;
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
+    private final StockRepo stockRepo;
+    private final OrderDetailRepo orderDetailRepo;
 
     @Override
-    public List<ProductCategoryDTO> getAllProduct() {
-        List<Product> products = productRepo.findAll();
-
-        if(products == null) {
-            return null;
-        } else {
-            List<ProductCategoryDTO> productCategoryDTOS = new ArrayList<ProductCategoryDTO>();
-            for (int i = 0; i < products.size(); i++) {
-                productCategoryDTOS.add(new ProductCategoryDTO(products.get(i), products.get(i).getCategory()));
-            }
-
-            return productCategoryDTOS;
-        }
+    public List<Product> getAllProducts() {
+        return  productRepo.findAll();
     }
 
     @Override
-    public ProductCategoryDTO getProductById(int id) {
-        Product product = productRepo.findById(id);
-        return new ProductCategoryDTO(product, product.getCategory());
+    public Product getProduct(Integer id) {
+        return productRepo.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional
     @Override
-    public void createProduct(ProductCategoryDTO product) {
+    public Product createProduct(ProductCategoryDTO product) {
         Category category = categoryRepo.findByName(product.getCategoryName());
-        System.out.println("1");
+
         // Create category if not exists
-        if(category == null) {
+        if (category == null) {
             category = Category.builder().name(product.getCategoryName())
                     .description(product.getCategoryDescription()).build();
             categoryRepo.save(category);
-        };
+        }
 
-        //System.out.println(category.getName());
-
+        // Create a new product
         Product newProduct = Product.builder().name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .weight(product.getWeight())
-                .image_url(product.getImage_url())
+                .imageUrl(product.getImageUrl())
                 .category(category).build();
         productRepo.save(newProduct);
 
-        List<Product> list = new ArrayList<Product>();
-        list.add(newProduct);
-        category.setProducts(list);
+        return newProduct;
     }
 
+    @Transactional
     @Override
-    public void updateProduct(int id, ProductCategoryDTO product) {
+    public Product updateProduct(Integer id, ProductCategoryDTO product) {
+        // Find the existing product with the same id
+        Product prod = productRepo.findById(id).orElseThrow(RuntimeException::new);
+        Category category = prod.getCategory();
 
+        // Update data from product
+        prod.setName(product.getName());
+        prod.setDescription(product.getDescription());
+        prod.setPrice(product.getPrice());
+        prod.setWeight(product.getWeight());
+        prod.setImageUrl(product.getImageUrl());
+
+        // Update data for category
+        category.setName(product.getCategoryName());
+        category.setDescription(product.getCategoryDescription());
+
+        // Save the new data
+        categoryRepo.save(category);
+        productRepo.save(prod);
+
+        return prod;
     }
 
+    @Transactional
     @Override
-    public void deleteProduct(int id) {
-        Product product = productRepo.findById(id);
+    public void deleteProduct(Integer id) {
+        Product product = productRepo.findById(id).orElseThrow(RuntimeException::new);
         Category category = product.getCategory();
         Supplier supplier = product.getSupplier();
-        /*List<OrderDetail> orderDetails = product.getOrderDetail();
-        List<Stock> stocks = product.getStock();*/
-
-        //categoryRepo.deleteByProductId(id);
 
         // Delete product from category
-        System.out.println(category.getProducts().size());
-        for(int i = 0; i < category.getProducts().size(); i++) {
-            if(category.getProducts().get(i).getId() == id) {
+        for (int i = 0; i < category.getProducts().size(); i++) {
+            if (category.getProducts().get(i).getId().equals(id)) {
                 category.getProducts().remove(product);
             }
         }
 
-        stockRepo.deleteByProductId(id);
-        orderDetailRepo.deleteByProductId(id);
-        // Delete product from db
-        productRepo.deleteById(id);
-
         // Delete product from supplier
-        /*for(int i = 0; i < supplier.getProducts().size(); i++) {
-            if(supplier.getProducts().get(i).getId() == id) {
+        for (int i = 0; i < supplier.getProducts().size(); i++) {
+            if (supplier.getProducts().get(i).getId().equals(id)) {
                 supplier.getProducts().remove(product);
             }
-        }*/
+        }
+
+        // Delete product from stock
+        stockRepo.deleteByProductId(id);
 
         // Delete product from order detail
-        /*for(int i = 0; i < orderDetails.size(); i++) {
-            if(orderDetails.get(i).getProduct().equals(product)) {
-                orderDetails.remove(orderDetails.get(i).getProduct());
-            }
-        }*/
+        orderDetailRepo.deleteByProductId(id);
 
-        //Delete product from stock
-        /*for(int i = 0; i < stocks.size(); i++) {
-            if(stocks.get(i).getProduct().equals(product)) {
-                stocks.remove(stocks.get(i).getProduct());
-            }
-        }*/
+        // Delete product from db
+        productRepo.deleteById(id);
     }
 }

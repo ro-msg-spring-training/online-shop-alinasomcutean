@@ -14,11 +14,12 @@ import java.util.List;
 @Builder
 @Data
 @Entity
-@Table(name = "order", schema = "shop_schema")
-public class Order implements IPrimaryKey{
+@Table(name = "orders", schema = "shop_schema")
+public class Order {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     private Location shippedFrom;

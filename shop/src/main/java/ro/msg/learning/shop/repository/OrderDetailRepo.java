@@ -8,5 +8,5 @@ import ro.msg.learning.shop.model.OrderDetailId;
 @Repository
 public interface OrderDetailRepo extends JpaRepository<OrderDetail, OrderDetailId> {
 
-    void deleteByProductId(int id);
+    void deleteByProductId(Integer id);
 }

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.asm.Advice;
-import org.aspectj.weaver.ast.Or;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,10 +14,11 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "location", schema = "shop_schema")
-public class Location implements IPrimaryKey{
+public class Location {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
@@ -29,9 +28,9 @@ public class Location implements IPrimaryKey{
     @OneToMany(mappedBy = "location")
     private List<Stock> stock;
 
-    @OneToMany
+    @OneToMany(mappedBy = "shippedFrom")
     private List<Order> order;
 
-    @OneToMany
+    @OneToMany(mappedBy = "location")
     private List<Revenue> revenue;
 }

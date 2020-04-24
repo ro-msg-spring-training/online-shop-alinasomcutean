@@ -13,9 +13,10 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "order_detail", schema = "shop_schema")
-public class OrderDetail implements IPrimaryKey {
+public class OrderDetail {
 
     @EmbeddedId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private OrderDetailId orderDetailId;
 
     @ManyToOne
@@ -26,5 +27,5 @@ public class OrderDetail implements IPrimaryKey {
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
-    private int quantity;
+    private Integer quantity;
 }

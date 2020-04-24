@@ -14,15 +14,16 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "revenue", schema = "shop_schema")
-public class Revenue implements IPrimaryKey{
+public class Revenue {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     private Location location;
 
     private Date date;
 
-    private double sum;
+    private Double sum;
 }

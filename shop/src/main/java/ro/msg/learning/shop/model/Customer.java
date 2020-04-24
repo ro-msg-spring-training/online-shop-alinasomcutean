@@ -14,10 +14,11 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "customer", schema = "shop_schema")
-public class Customer implements IPrimaryKey{
+public class Customer {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String firstName;
 
@@ -27,6 +28,6 @@ public class Customer implements IPrimaryKey{
 
     private String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "customer")
     private List<Order> orders;
 }

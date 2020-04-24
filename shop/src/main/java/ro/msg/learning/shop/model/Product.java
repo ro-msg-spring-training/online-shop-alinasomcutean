@@ -14,18 +14,19 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "product", schema = "shop_schema")
-public class Product implements IPrimaryKey{
+public class Product {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
     private String description;
 
-    private double price;
+    private Double price;
 
-    private double weight;
+    private Double weight;
 
     @ManyToOne
     private Category category;
@@ -33,7 +34,7 @@ public class Product implements IPrimaryKey{
     @ManyToOne
     private Supplier supplier;
 
-    private String image_url;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "product")
     private List<Stock> stock;

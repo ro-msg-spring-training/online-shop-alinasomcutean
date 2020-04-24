@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
 
@@ -14,7 +13,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "stock", schema = "shop_schema")
-public class Stock implements IPrimaryKey{
+public class Stock {
 
     @EmbeddedId
     private StockId stockId;
@@ -27,5 +26,5 @@ public class Stock implements IPrimaryKey{
     @JoinColumn(name = "location_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Location location;
 
-    private int quantity;
+    private Integer quantity;
 }

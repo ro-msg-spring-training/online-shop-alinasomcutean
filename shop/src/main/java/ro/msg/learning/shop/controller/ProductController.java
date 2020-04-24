@@ -1,28 +1,38 @@
 package ro.msg.learning.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dto.ProductCategoryDTO;
+import ro.msg.learning.shop.model.Product;
 import ro.msg.learning.shop.services.ProductService;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-public class ProductServiceController {
-    @Autowired
-    ProductService productService;
+public class ProductController {
+
+    private final ProductService productService;
 
     @GetMapping("/products")
     public List<ProductCategoryDTO> getProducts() {
-        return productService.getAllProduct();
+        List<Product> products = productService.getAllProducts();
+        List<ProductCategoryDTO> productCategoryDTOS = new ArrayList<>();
+
+        for (Product product : products) {
+            productCategoryDTOS.add(new ProductCategoryDTO(product, product.getCategory()));
+        }
+        return productCategoryDTOS;
     }
 
     @GetMapping("/products/{id}")
-    public ProductCategoryDTO getProductById(@PathVariable int id) {
-        return productService.getProductById(id);
+    public ProductCategoryDTO getProduct(@PathVariable int id) {
+        Product product = productService.getProduct(id);
+        return new ProductCategoryDTO(product, product.getCategory());
     }
 
     @PostMapping(value = "/products", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -35,5 +45,11 @@ public class ProductServiceController {
     public ResponseEntity<Object> deleteProduct(@PathVariable int id) {
         productService.deleteProduct(id);
         return new ResponseEntity<>("Product is deleted successfully", HttpStatus.OK);
+    }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<Object> updateProduct(@PathVariable int id, @RequestBody ProductCategoryDTO product) {
+        productService.updateProduct(id, product);
+        return new ResponseEntity<>("Product was updated successfully", HttpStatus.OK);
     }
 }

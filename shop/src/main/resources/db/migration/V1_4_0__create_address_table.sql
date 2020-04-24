@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS address (
     `country` VARCHAR(30),
     `city` VARCHAR(30),
     `county` VARCHAR(30),
-    `streetAddress` VARCHAR(50)
+    `street_address` VARCHAR(50)
 )
