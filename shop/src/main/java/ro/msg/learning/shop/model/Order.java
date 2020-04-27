@@ -22,9 +22,6 @@ public class Order {
     private Integer id;
 
     @ManyToOne
-    private Location shippedFrom;
-
-    @ManyToOne
     private Customer customer;
 
     private Date createdAt;

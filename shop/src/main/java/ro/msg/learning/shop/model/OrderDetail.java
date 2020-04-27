@@ -27,5 +27,9 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Location location;
+
     private Integer quantity;
 }

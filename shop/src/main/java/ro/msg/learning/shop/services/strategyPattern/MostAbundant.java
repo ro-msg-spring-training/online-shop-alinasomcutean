@@ -1,23 +1,22 @@
 package ro.msg.learning.shop.services.strategyPattern;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dto.LocationDTO;
 import ro.msg.learning.shop.dto.OrderDetailDTO;
 import ro.msg.learning.shop.dto.ProductDTO;
 import ro.msg.learning.shop.exceptions.LocationNotFoundException;
-import ro.msg.learning.shop.model.Location;
-import ro.msg.learning.shop.model.OrderDetail;
+import ro.msg.learning.shop.exceptions.UnavailableStockException;
 import ro.msg.learning.shop.model.Stock;
-import ro.msg.learning.shop.repository.LocationRepo;
 import ro.msg.learning.shop.repository.StockRepo;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Service
 public class MostAbundant implements Strategy {
 
     private final StockRepo stockRepo;
@@ -41,12 +40,20 @@ public class MostAbundant implements Strategy {
                 ProductDTO productDTO = new ProductDTO(stocks.get(0).getProduct());
 
                 orderDetails.add(new OrderDetailDTO(locationDTO, productDTO, (Integer) map.getValue()));
+            } else{
+                throw new UnavailableStockException("Product " + (Integer) map.getKey() + " doesn't have in stock " + (Integer) map.getValue() + " items");
             }
         }
 
         if (orderDetails.size() != orderedProducts.size()) {
             throw new LocationNotFoundException("Unable to find a suitable set of locations");
         } else {
+            // If order can be placed, update the stock
+            for(OrderDetailDTO o : orderDetails) {
+                Stock stock = stockRepo.findByProductIdAndLocationId(o.getProduct().getId(), o.getLocation().getId());
+                stock.setQuantity(stock.getQuantity() - o.getQuantity());
+                stockRepo.save(stock);
+            }
             return orderDetails;
         }
     }

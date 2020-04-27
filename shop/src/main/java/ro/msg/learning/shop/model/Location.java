@@ -28,8 +28,8 @@ public class Location {
     @OneToMany(mappedBy = "location")
     private List<Stock> stock;
 
-    @OneToMany(mappedBy = "shippedFrom")
-    private List<Order> order;
+    @OneToMany(mappedBy = "location")
+    private List<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "location")
     private List<Revenue> revenue;

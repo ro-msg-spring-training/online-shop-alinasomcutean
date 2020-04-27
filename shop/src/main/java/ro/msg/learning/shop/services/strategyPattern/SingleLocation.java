@@ -1,38 +1,36 @@
 package ro.msg.learning.shop.services.strategyPattern;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dto.LocationDTO;
 import ro.msg.learning.shop.dto.OrderDetailDTO;
 import ro.msg.learning.shop.dto.ProductDTO;
+import ro.msg.learning.shop.exceptions.LocationNotFoundException;
+import ro.msg.learning.shop.exceptions.UnavailableStockException;
 import ro.msg.learning.shop.model.Location;
-import ro.msg.learning.shop.model.OrderDetail;
 import ro.msg.learning.shop.model.Product;
 import ro.msg.learning.shop.model.Stock;
 import ro.msg.learning.shop.repository.LocationRepo;
 import ro.msg.learning.shop.repository.ProductRepo;
 import ro.msg.learning.shop.repository.StockRepo;
-import sun.util.locale.LocaleSyntaxException;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Service
 public class SingleLocation implements Strategy {
 
-    @Autowired
-    private LocationRepo locationRepo;
-    @Autowired
-    private StockRepo stockRepo;
-    @Autowired
-    private ProductRepo productRepo;
+    private final LocationRepo locationRepo;
+    private final StockRepo stockRepo;
+    private final ProductRepo productRepo;
 
+    @Transactional
     @Override
-    public List<OrderDetailDTO> chooseStrategy(HashMap<Integer, Integer> orderedProducts) throws LocaleSyntaxException {
+    public List<OrderDetailDTO> chooseStrategy(HashMap<Integer, Integer> orderedProducts) {
         // Find all the locations
         List<Location> locations = locationRepo.findAll();
 
@@ -62,6 +60,8 @@ public class SingleLocation implements Strategy {
                         ProductDTO productDTO = new ProductDTO(prod);
 
                         orderDetails.add(new OrderDetailDTO(locationDTO, productDTO, (Integer) map.getValue()));
+                    } else {
+                        throw new UnavailableStockException("Product " + (Integer) map.getKey() + " doesn't have in stock " + (Integer) map.getValue() + " items");
                     }
                 }
             }
@@ -69,12 +69,18 @@ public class SingleLocation implements Strategy {
             // This location has all the products needed and the order can be placed
             // Doesn't matter what other locations has
             if (orderDetails.size() == orderedProducts.size()) {
+                // If the order can be places, update the stock of products
+                for (Map.Entry map : orderedProducts.entrySet()) {
+                    Stock product = stockRepo.findByProductIdAndLocationId((Integer) map.getKey(), l.getId());
+                    product.setQuantity(product.getQuantity() - (Integer)map.getValue());
+                    stockRepo.save(product);
+                }
                 return orderDetails;
             } else {
                 orderDetails.clear();
             }
         }
 
-        throw new LocaleSyntaxException("Unable to find a suitable set of locations");
+        throw new LocationNotFoundException("Unable to find a suitable set of locations");
     }
 }
