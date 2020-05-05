@@ -1,15 +1,16 @@
 package ro.msg.learning.shop.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@ToString
+@Builder
 @EqualsAndHashCode
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Embeddable
 public class StockId implements Serializable {

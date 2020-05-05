@@ -27,10 +27,10 @@ insert into location(name, address_id) values ('Cluj', 1);
 insert into location(name, address_id) values ('Baia Mare', 2);
 insert into location(name, address_id) values ('Ileanda', 3);
 
-insert into stock(product_id, location_id, quantity) values (2, 1, 10);
+insert into stock(product_id, location_id, quantity) values (2, 1, 30);
 insert into stock(product_id, location_id, quantity) values (3, 1, 100);
 insert into stock(product_id, location_id, quantity) values (4, 1, 30);
-insert into stock(product_id, location_id, quantity) values (5, 1, 10);
+insert into stock(product_id, location_id, quantity) values (5, 1, 8);
 insert into stock(product_id, location_id, quantity) values (6, 1, 50);
 insert into stock(product_id, location_id, quantity) values (1, 2, 40);
 insert into stock(product_id, location_id, quantity) values (2, 2, 10);

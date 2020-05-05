@@ -1,11 +1,11 @@
 package ro.msg.learning.shop.services.strategyPattern;
 
-import ro.msg.learning.shop.dto.OrderDetailDTO;
+import ro.msg.learning.shop.model.Product;
+import ro.msg.learning.shop.model.Stock;
 
 import java.util.HashMap;
-import java.util.List;
 
 public interface Strategy {
 
-    List<OrderDetailDTO> chooseStrategy(HashMap<Integer, Integer> orderedProducts);
+    HashMap<Product, Stock> chooseStrategy(HashMap<Integer, Integer> orderedProducts);
 }

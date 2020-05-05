@@ -2,7 +2,7 @@ package ro.msg.learning.shop.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ro.msg.learning.shop.dto.ProductCategoryDTO;
+import ro.msg.learning.shop.dto.ProductCategoryDto;
 import ro.msg.learning.shop.model.Category;
 import ro.msg.learning.shop.model.Product;
 import ro.msg.learning.shop.model.Supplier;
@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product createProduct(ProductCategoryDTO product) {
+    public Product createProduct(ProductCategoryDto product) {
         Category category = categoryRepo.findByName(product.getCategoryName());
 
         // Create category if not exists
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product updateProduct(Integer id, ProductCategoryDTO product) {
+    public Product updateProduct(Integer id, ProductCategoryDto product) {
         // Find the existing product with the same id
         Product prod = productRepo.findById(id).orElseThrow(RuntimeException::new);
         Category category = prod.getCategory();

@@ -1,14 +1,12 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,5 +25,6 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     @Builder.Default
+    @ToString.Exclude
     private List<Product> products = new ArrayList<>();
 }

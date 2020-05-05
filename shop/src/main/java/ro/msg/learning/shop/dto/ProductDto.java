@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ro.msg.learning.shop.model.Category;
 import ro.msg.learning.shop.model.Product;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class ProductCategoryDTO {
+public class ProductDto {
 
     private Integer id;
 
@@ -23,20 +22,11 @@ public class ProductCategoryDTO {
 
     private Double weight;
 
-    private String imageUrl;
-
-    private String categoryName;
-
-    private String categoryDescription;
-
-    public ProductCategoryDTO(Product product, Category category) {
+    public ProductDto(Product product) {
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();
         this.weight = product.getWeight();
-        this.imageUrl = product.getImageUrl();
-        this.categoryName = category.getName();
-        this.categoryDescription = category.getDescription();
     }
 }

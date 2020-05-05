@@ -1,13 +1,11 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

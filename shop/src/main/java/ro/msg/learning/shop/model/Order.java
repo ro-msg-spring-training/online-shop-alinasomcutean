@@ -1,14 +1,13 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -22,13 +21,16 @@ public class Order {
     private Integer id;
 
     @ManyToOne
+    private Location shippedFrom;
+
+    @ManyToOne
     private Customer customer;
 
     private Date createdAt;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderDetail> orderDetail;
+    private List<OrderDetail> orderDetail = new ArrayList<>();
 }

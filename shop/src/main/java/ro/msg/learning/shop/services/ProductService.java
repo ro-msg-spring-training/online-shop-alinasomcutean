@@ -1,6 +1,6 @@
 package ro.msg.learning.shop.services;
 
-import ro.msg.learning.shop.dto.ProductCategoryDTO;
+import ro.msg.learning.shop.dto.ProductCategoryDto;
 import ro.msg.learning.shop.model.Product;
 
 import java.util.List;
@@ -11,9 +11,9 @@ public interface ProductService {
 
     Product getProduct(Integer id);
 
-    Product createProduct(ProductCategoryDTO product);
+    Product createProduct(ProductCategoryDto product);
 
-    Product updateProduct(Integer id, ProductCategoryDTO product);
+    Product updateProduct(Integer id, ProductCategoryDto product);
 
     void deleteProduct(Integer id);
 }

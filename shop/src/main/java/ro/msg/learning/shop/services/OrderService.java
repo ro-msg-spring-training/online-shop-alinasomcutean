@@ -1,9 +1,13 @@
 package ro.msg.learning.shop.services;
 
-import ro.msg.learning.shop.dto.OrderDTO;
+import ro.msg.learning.shop.model.Address;
 import ro.msg.learning.shop.model.Order;
+
+import java.util.HashMap;
+import java.util.List;
+
 
 public interface OrderService {
 
-    Order createOrder(OrderDTO orderDTO);
+    List<Order> createOrder(Address address, HashMap<Integer, Integer> orderedProducts);
 }

@@ -1,11 +1,14 @@
 package ro.msg.learning.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ro.msg.learning.shop.dto.OrderDTO;
-import ro.msg.learning.shop.dto.OrderDetailDTO;
+import ro.msg.learning.shop.dto.LocationDto;
+import ro.msg.learning.shop.dto.OrderDto;
+import ro.msg.learning.shop.dto.OrderDetailDto;
+import ro.msg.learning.shop.dto.ProductDto;
+import ro.msg.learning.shop.model.Address;
 import ro.msg.learning.shop.model.Order;
 import ro.msg.learning.shop.model.OrderDetail;
 import ro.msg.learning.shop.services.OrderServiceImpl;
@@ -13,21 +16,30 @@ import ro.msg.learning.shop.services.OrderServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class OrderController {
-    @Autowired
-    OrderServiceImpl orderService;
+
+    private final OrderServiceImpl orderService;
 
     @PostMapping("/orders")
-    public List<OrderDetailDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        Order order = orderService.createOrder(orderDTO);
-        List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
+    public List<OrderDetailDto> createOrder(@RequestBody OrderDto orderDTO) {
+        Address address = new Address(orderDTO.getCountry(), orderDTO.getCounty(), orderDTO.getCity(), orderDTO.getStreetAddress());
+        List<Order> order = orderService.createOrder(address, orderDTO.getOrderedProducts());
 
-        for(OrderDetail o : order.getOrderDetail()) {
-            orderDetailDTOS.add(new OrderDetailDTO(o));
+        List<OrderDetailDto> orderDetailDtos = new ArrayList<>();
+
+        for(Order o : order) {
+            List<OrderDetail> orderDetails = o.getOrderDetail();
+            LocationDto locationDTO = new LocationDto(o.getShippedFrom());
+            for(OrderDetail orderDetail : orderDetails) {
+                ProductDto productDTO = new ProductDto((orderDetail.getProduct()));
+                OrderDetailDto orderDetailDTO = new OrderDetailDto(locationDTO, productDTO, orderDetail.getQuantity());
+                orderDetailDtos.add(orderDetailDTO);
+            }
         }
 
-        return orderDetailDTOS;
+        return orderDetailDtos;
     }
 
 }

@@ -1,12 +1,10 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,10 +24,6 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
-
-    @ManyToOne
-    @JoinColumn(name = "location_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Location location;
 
     private Integer quantity;
 }

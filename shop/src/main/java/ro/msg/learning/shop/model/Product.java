@@ -1,13 +1,11 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,8 +35,10 @@ public class Product {
     private String imageUrl;
 
     @OneToMany(mappedBy = "product")
+    @ToString.Exclude
     private List<Stock> stock;
 
     @OneToMany(mappedBy = "order")
+    @ToString.Exclude
     private List<OrderDetail> orderDetail;
 }

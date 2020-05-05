@@ -2,10 +2,8 @@ package ro.msg.learning.shop.services.strategyPattern;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ro.msg.learning.shop.dto.LocationDTO;
-import ro.msg.learning.shop.dto.OrderDetailDTO;
-import ro.msg.learning.shop.dto.ProductDTO;
 import ro.msg.learning.shop.exceptions.LocationNotFoundException;
+import ro.msg.learning.shop.exceptions.ProductIdNotFoundException;
 import ro.msg.learning.shop.exceptions.UnavailableStockException;
 import ro.msg.learning.shop.model.Location;
 import ro.msg.learning.shop.model.Product;
@@ -15,7 +13,6 @@ import ro.msg.learning.shop.repository.ProductRepo;
 import ro.msg.learning.shop.repository.StockRepo;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,57 +27,43 @@ public class SingleLocation implements Strategy {
 
     @Transactional
     @Override
-    public List<OrderDetailDTO> chooseStrategy(HashMap<Integer, Integer> orderedProducts) {
+    public HashMap<Product, Stock> chooseStrategy(HashMap<Integer, Integer> orderedProducts) {
         // Find all the locations
         List<Location> locations = locationRepo.findAll();
 
-        // List with the order details of the user
-        List<OrderDetailDTO> orderDetails = new ArrayList<>();
+        // Map with the product id and stock from where it is taken
+        HashMap<Product, Stock> shippedFrom = new HashMap<>();
 
         // For each location
         for (Location l : locations) {
-            // Find all of its stock
-            List<Stock> stocks = l.getStock();
-
             // For each product that user wants to order
-            for (Map.Entry map : orderedProducts.entrySet()) {
+            for (Map.Entry<Integer, Integer> map : orderedProducts.entrySet()) {
 
-                // Find the stock after a specific product
-                Stock product = stockRepo.findByProductIdAndLocationId((Integer) map.getKey(), l.getId());
+                Product product = productRepo.findById(map.getKey()).orElseThrow(() -> new ProductIdNotFoundException("Product with id " + map.getKey() + "doesn't exists"));
+
+                // Find the stock after a specific product id and location id
+                Stock stock = stockRepo.findByProductIdAndLocationId(product.getId(), l.getId());
 
                 // Check if the location has it
-                if (stocks.contains(product)) {
+                if (stock != null) {
                     // Location has enough number of that product
-                    if (product.getQuantity() >= (Integer) map.getValue()) {
-                        // Create DTO for location
-                        LocationDTO locationDTO = new LocationDTO(l);
-
-                        // Create DTO for product
-                        Product prod = productRepo.findById((Integer) map.getKey()).orElseThrow(RuntimeException::new);
-                        ProductDTO productDTO = new ProductDTO(prod);
-
-                        orderDetails.add(new OrderDetailDTO(locationDTO, productDTO, (Integer) map.getValue()));
+                    if (stock.getQuantity() >= map.getValue()) {
+                        shippedFrom.put(product, stock);
                     } else {
-                        throw new UnavailableStockException("Product " + (Integer) map.getKey() + " doesn't have in stock " + (Integer) map.getValue() + " items");
+                        throw new UnavailableStockException("Product " + map.getKey() + " doesn't have in stock " + map.getValue() + " items");
                     }
                 }
             }
 
             // This location has all the products needed and the order can be placed
             // Doesn't matter what other locations has
-            if (orderDetails.size() == orderedProducts.size()) {
-                // If the order can be places, update the stock of products
-                for (Map.Entry map : orderedProducts.entrySet()) {
-                    Stock product = stockRepo.findByProductIdAndLocationId((Integer) map.getKey(), l.getId());
-                    product.setQuantity(product.getQuantity() - (Integer)map.getValue());
-                    stockRepo.save(product);
-                }
-                return orderDetails;
+            if (shippedFrom.size() == orderedProducts.size()) {
+                return shippedFrom;
             } else {
-                orderDetails.clear();
+                shippedFrom.clear();
             }
         }
 
-        throw new LocationNotFoundException("Unable to find a suitable set of locations");
+        throw new LocationNotFoundException("Unable to find all products at the same location");
     }
 }

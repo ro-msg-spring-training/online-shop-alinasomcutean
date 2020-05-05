@@ -1,12 +1,10 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,4 +24,11 @@ public class Address {
     private String county;
 
     private String streetAddress;
+
+    public Address(String country, String county, String city, String streetAddress) {
+        this.country = country;
+        this.county = county;
+        this.city = city;
+        this.streetAddress = streetAddress;
+    }
 }

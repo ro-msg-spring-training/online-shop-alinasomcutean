@@ -1,12 +1,10 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,10 +18,12 @@ public class Stock {
 
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ToString.Exclude
     private Product product;
 
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ToString.Exclude
     private Location location;
 
     private Integer quantity;

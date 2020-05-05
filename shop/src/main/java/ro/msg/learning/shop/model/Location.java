@@ -1,13 +1,11 @@
 package ro.msg.learning.shop.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -29,8 +27,8 @@ public class Location {
     private List<Stock> stock;
 
     @OneToMany(mappedBy = "location")
-    private List<OrderDetail> orderDetails;
-
-    @OneToMany(mappedBy = "location")
     private List<Revenue> revenue;
+
+    @OneToMany(mappedBy = "shippedFrom")
+    private List<Order> orders;
 }

@@ -1,18 +1,16 @@
 package ro.msg.learning.shop.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.HashMap;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class OrderDTO {
+public class OrderDto {
 
     private Integer id;
 

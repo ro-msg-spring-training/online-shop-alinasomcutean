@@ -10,7 +10,7 @@ import ro.msg.learning.shop.model.Location;
 @NoArgsConstructor
 @Setter
 @Getter
-public class LocationDTO {
+public class LocationDto {
 
     private Integer id;
 
@@ -24,7 +24,7 @@ public class LocationDTO {
 
     private String streetAddress;
 
-    public LocationDTO(Location location) {
+    public LocationDto(Location location) {
         this.id = location.getId();
         this.name = location.getName();
         this.country = location.getAddress().getCountry();

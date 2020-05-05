@@ -21,12 +21,11 @@ public class StrategyFactory {
 
     @Bean
     public Strategy strategy() {
-        //System.out.println(chosenStrategy);
         switch (chosenStrategy) {
             case "single_location" :
                 return new SingleLocation(locationRepo, stockRepo, productRepo);
             case "most_abundant" :
-                return new MostAbundant(stockRepo);
+                return new MostAbundant(stockRepo, productRepo);
         }
         return null;
     }
